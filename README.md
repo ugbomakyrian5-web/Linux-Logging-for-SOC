@@ -63,12 +63,12 @@ Filtering for `yama` revealed the Linux Security Module (LSM) kernel message: `Y
 **Key insight**: `/var/log/syslog` is the starting point for any Linux investigation — it aggregates system events, service starts, kernel messages, and NTP activity that help establish a reliable timeline.
 
 #### 📸 Screenshot 1 — `/var/log/syslog`: NTP Server `ntp.ubuntu.com` Identified
-<img width="1366" height="728" alt="syslog NTP" src="https://github.com/ugbomakyrian5-web/linux-logging-for-soc/blob/main/screenshots/1_syslog_ntp_ubuntu_com.png" />
+<img width="1366" height="729" alt="image" src="https://github.com/user-attachments/assets/6d192201-61ac-46e2-bed3-5d3ff83863a8" />
 
 *syslog — systemd-timesyncd contacting ntp.ubuntu.com — multiple timeout attempts visible before sync*
 
 #### 📸 Screenshot 2 — `/var/log/syslog`: Kernel Yama Message Confirmed
-<img width="1366" height="728" alt="syslog Yama" src="https://github.com/ugbomakyrian5-web/linux-logging-for-soc/blob/main/screenshots/2_syslog_yama_kernel_message.png" />
+<img width="1366" height="728" alt="image" src="https://github.com/user-attachments/assets/daa09d31-780e-4f8b-b8aa-9a67db49bc11" />
 
 *grep -i "yama" /var/log/syslog — kernel: Yama: becoming mindful — LSM initialisation confirmed*
 
@@ -89,12 +89,12 @@ User management log analysis exposed the persistence mechanism — `useradd` cre
 **Key indicator**: `useradd` followed within seconds by `usermod` adding to `sudo` — this sequence is the definitive Linux backdoor account creation signature.
 
 #### 📸 Screenshot 3 — `/var/log/auth.log`: SSH Brute-Force from `10.14.94.82`
-<img width="1366" height="728" alt="auth.log SSH brute force" src="https://github.com/ugbomakyrian5-web/linux-logging-for-soc/blob/main/screenshots/3_auth_log_ssh_brute_force.png" />
+<img width="1366" height="729" alt="image" src="https://github.com/user-attachments/assets/50758143-fc4f-4f3d-8b22-9d96a5a19928" />
 
 *auth.log — Failed password for root, admin, support from 10.14.94.82 — credential stuffing attack confirmed*
 
 #### 📸 Screenshot 4 — `/var/log/auth.log`: Backdoor Account `xerxes` Created + Added to sudo
-<img width="1366" height="728" alt="auth.log xerxes" src="https://github.com/ugbomakyrian5-web/linux-logging-for-soc/blob/main/screenshots/4_auth_log_xerxes_sudo.png" />
+<img width="1366" height="733" alt="image" src="https://github.com/user-attachments/assets/58cd0f99-fe53-44b7-a965-0886aab51f7b" />
 
 *auth.log — useradd: new user xerxes, usermod: add xerxes to group sudo — backdoor account with elevated privileges confirmed*
 
@@ -115,12 +115,12 @@ Bash history analysis of the root account revealed the full command history incl
 **Key insight**: Bash history is often overlooked but can contain decisive evidence — always check `.bash_history` for every active user, not just the primary account.
 
 #### 📸 Screenshot 5 — `/var/log/dpkg.log`: `unzip 6.0-28ubuntu4.1` Installation Confirmed
-<img width="1366" height="728" alt="dpkg unzip" src="https://github.com/ugbomakyrian5-web/linux-logging-for-soc/blob/main/screenshots/5_dpkg_log_unzip_version.png" />
+<img width="1366" height="726" alt="image" src="https://github.com/user-attachments/assets/eb97e99b-f43d-4b5f-8989-10dfb6563e97" />
 
 *dpkg.log — install unzip:amd64 6.0-28ubuntu4.1 — package installation timestamp confirms tool staging*
 
 #### 📸 Screenshot 6 — `~/.bash_history`: Flag `THM{note_to_remember}` Recovered
-<img width="1366" height="728" alt="bash history flag" src="https://github.com/ugbomakyrian5-web/linux-logging-for-soc/blob/main/screenshots/6_bash_history_flag.png" />
+<img width="1366" height="729" alt="image" src="https://github.com/user-attachments/assets/5bca7550-b667-4b1b-a4ce-9ae587a7cdad" />
 
 *root .bash_history — echo "THM{note_to_remember}" >> notes.txt — flag confirmed, attacker operated as root*
 
@@ -150,17 +150,17 @@ Correlating the naabu process (auid=ubuntu, uid=root), the auditd logs captured 
 **Key insight**: Auditd is the only log source that captured the tool download, extraction, permission change, and network scan as a connected chain — none of this would be visible in auth.log or syslog alone.
 
 #### 📸 Screenshot 7 — Auditd: `/secret.thm` First Accessed at `08/13/25 18:36:54`
-<img width="1366" height="728" alt="auditd secret.thm" src="https://github.com/ugbomakyrian5-web/linux-logging-for-soc/blob/main/screenshots/7_auditd_secret_thm_access.png" />
+<img width="1366" height="728" alt="image" src="https://github.com/user-attachments/assets/f9524d4d-24d0-4c3b-b082-f2e9878bda7a" />
 
 *ausearch -i -k file_thmsecret — proctitle=cat /secret.thm, syscall=openat, timestamp: 08/13/25 18:36:54*
 
 #### 📸 Screenshot 8 — Auditd: `naabu_2.3.5_linux_amd64.zip` Downloaded via wget
-<img width="1366" height="728" alt="auditd naabu wget" src="https://github.com/ugbomakyrian5-web/linux-logging-for-soc/blob/main/screenshots/8_auditd_naabu_wget_download.png" />
+<img width="1366" height="728" alt="image" src="https://github.com/user-attachments/assets/ebd372cc-b45d-49b1-9177-9fcb60520973" />
 
 *ausearch -i -k proc_wget — proctitle=wget https://github.com/.../naabu_2.3.5_linux_amd64.zip — tool download confirmed*
 
 #### 📸 Screenshot 9 — Auditd: Network Scan of `192.168.50.0/24` Using naabu
-<img width="1366" height="728" alt="auditd naabu scan" src="https://github.com/ugbomakyrian5-web/linux-logging-for-soc/blob/main/screenshots/9_auditd_naabu_network_scan.png" />
+<img width="1366" height="728" alt="image" src="https://github.com/user-attachments/assets/aef5138f-9e08-4633-8071-4207293807a6" />
 
 *auditd — proctitle=./naabu -host 192.168.50.0/24 -top-ports — internal network reconnaissance confirmed*
 
